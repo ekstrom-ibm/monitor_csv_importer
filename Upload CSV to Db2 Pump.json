@@ -1,0 +1,1025 @@
+[
+    {
+        "id": "ced42fa7.cb8f3",
+        "type": "tab",
+        "label": "Upload CSV to Db2 SQL",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9c2f7110.db4c9",
+        "type": "chunks-to-lines",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "nbLines": "2048",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 420,
+        "y": 920,
+        "wires": [
+            [
+                "802cb3b4.c558c",
+                "95de3d6c.4ed4"
+            ]
+        ]
+    },
+    {
+        "id": "c6212d29.ee945",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Ready for next lines",
+        "func": "\nif (msg.error == null) {\n    return [msg, { tick: true }];\n} else {\n    return [null, { tick: true }];\n}\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 860,
+        "wires": [
+            [
+                "16b8522a.20d0de",
+                "cf0776a4170db40c"
+            ],
+            [
+                "9c2f7110.db4c9"
+            ]
+        ]
+    },
+    {
+        "id": "802cb3b4.c558c",
+        "type": "csv",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 610,
+        "y": 920,
+        "wires": [
+            [
+                "fbac1d7b.47956",
+                "812fa13.218a86"
+            ]
+        ]
+    },
+    {
+        "id": "fbac1d7b.47956",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Format SQL",
+        "func": "// Get general flow variables set upon deployment of this flow\n\nlet deviceID = flow.get('deviceID');\nlet deviceType = flow.get('deviceType');\nlet columns = flow.get('columns');\nlet schemaName = flow.get('schemaName');\nlet metricTableName = flow.get('metricTableName');\n\n\n// Create timestamp for now\n\nlet now          = new Date();\nlet year         = now.getFullYear();\nlet month        = now.getMonth()+1; \nlet day          = now.getDate();\nlet hour         = now.getHours();\nlet minute       = now.getMinutes();\nlet second       = now.getSeconds();   \nlet millisecond  = now.getMilliseconds();   \n\nif(month.toString().length == 1) {\nmonth = '0'+month;\n}\nif(day.toString().length == 1) {\nday = '0'+day;\n}   \nif(hour.toString().length == 1) {\nhour = '0'+hour;\n}\nif(minute.toString().length == 1) {\nminute = '0'+minute;\n}\nif(second.toString().length == 1) {\nsecond = '0'+second;\n}   \n\nlet timestamp = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second+'.'+millisecond;\n\n\n// Create the SQL statement\n\nif (msg.payload && msg.payload.length > 0) {\n    // Create the SQL statement - starting with the standard content\n    let payload = 'INSERT INTO '+schemaName+'.'+metricTableName+' (RCV_TIMESTAMP_UTC, UPDATED_UTC, DEVICEID,DEVICETYPE,'+columns+') VALUES ';\n\n    for (const line of msg.payload) {\n        // !! This is standard content - DON'T CHANGE !!\n        payload += `('${timestamp}','${timestamp}','${deviceID}','${deviceType}'`;\n// BEGIN: COPIED OVER FROM STEP 3\n        // This is where each of the csv columns get added\n        // !! **** Manually enter data here (it is using JavaScript Template Literals) **** !!\n        payload += `, '${line.evt_timestamp}'`;\n        payload += `, '${line.speed1}'`;\n        payload += `, '${line.temp_in}'`;\n        payload += `, '${line.temp_out}'`;\n        payload += `, '${line.flow_in}'`;\n        payload += `, '${line.flow_out}'`;\n        payload += `, '${line.pressure1}'`;\n        payload += `, '${line.pressure2}'`;\n        payload += `, '${line.pump_life}'`;\n        payload += `, '${line.gasket_life}'`;\n        payload += `, '${line.impeller_life}'`;\n        payload += `, '${line.PumpError}'`;\n        payload += `, '${line.GasketError}'`;\n        payload += `, '${line.ImpellerError}' ),`;\n// END\n    }\n\n    msg.payload = payload.slice(0, - 1) + ';'; // Replaced the \",\" with \";\" in the end of the data values line as it was prepared for a multi line INSERT\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 920,
+        "wires": [
+            [
+                "fe28bd35.8c9bb",
+                "2408eeae.e57bf2"
+            ]
+        ]
+    },
+    {
+        "id": "3dc57e8d.4e15f2",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "5. Upload CSV data to SQL database using the UI uploader",
+        "info": "",
+        "x": 280,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "16b8522a.20d0de",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Progress",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "_parts.lines",
+        "statusType": "msg",
+        "x": 1400,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "fe28bd35.8c9bb",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "eee9e35b.e9b18",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "2. Create Asset Table in DB2",
+        "info": "# This was used in Postman:\n\n\nPOST https://mas83.api.monitor.maximo34.innovationcloud.info/api/meta/v1/mas83/entityType?createTables=true\n\nParams:\ncreateTables = true\n\nHeaders:\nContent-Type = application/json\nx-api-key = XXX\nx-api-token = XXX\n\n\nRaw Body:\n\n[\n  {\n    \"name\": \"JE_DB_TEST_2\",\n    \"description\": \"API created test asset for data ingestion\",\n    \"dimensionTableName\": \"JE_DB_TEST_2_DIMENSIONS\",\n    \"metricTableName\": \"JE_DB_TEST_2\",\n    \"metricTimestampColumn\": \"evt_timestamp\",\n    \"dataItemDto\": [\n      {\n        \"columnType\": \"TIMESTAMP\",\n        \"name\": \"evt_timestamp\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"evt_timestamp\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"speed1\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"speed1\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"temp_in\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"temp_in\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"temp_out\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"temp_out\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"flow_in\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"flow_in\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"flow_out\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"flow_out\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pressure1\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pressure1\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pressure2\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pressure2\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pump_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pump_life\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"gasket_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"gasket_life\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"impeller_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"impeller_life\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"PumpError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"PumpError\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"GasketError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"GasketError\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"ImpellerError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"ImpellerError\"\n      },\n      {\n        \"columnType\": \"LITERAL\",\n        \"name\": \"location\",\n        \"type\": \"DIMENSION\",\n        \"columnName\": \"location\"\n      }\n    ]\n  }\n]\n",
+        "x": 180,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "bcf9b402.2509d8",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "3. Inject 1 row of data into the table to verify it works",
+        "info": "",
+        "x": 250,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "1d97cbe8.0068b4",
+        "type": "inject",
+        "z": "ced42fa7.cb8f3",
+        "name": "Inject 1 row",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 620,
+        "wires": [
+            [
+                "5ceb81e5.e6fff"
+            ]
+        ]
+    },
+    {
+        "id": "8200367b.f5c098",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Upload File",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "95de3d6c.4ed4",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Chunks",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "57144882.3d7c68",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "1. Create generic flow data in the \"Set Flow Data\" function node",
+        "info": "",
+        "x": 290,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "ed89aa5e.99f3d8",
+        "type": "inject",
+        "z": "ced42fa7.cb8f3",
+        "name": "Initialisation",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 200,
+        "wires": [
+            [
+                "b4460bd1fa41e479"
+            ]
+        ]
+    },
+    {
+        "id": "17323056.d6f1e",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Flow Data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "b8bf76ff.caa808",
+        "type": "inject",
+        "z": "ced42fa7.cb8f3",
+        "name": "Get Flow data",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 300,
+        "wires": [
+            [
+                "dec3cee2.befb7"
+            ]
+        ]
+    },
+    {
+        "id": "dec3cee2.befb7",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Get'n'show flow data",
+        "func": "// Get a list of all flow variables\nlet keyArray = flow.keys();\n\n// Prepare the data object\nlet data = {};\n\n// Get all the flow variables and put them into the data object\nfor(let i = 0; i < keyArray.length; i++){ \n    data[keyArray[i]] = flow.get(keyArray[i]);\n}\n\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 300,
+        "wires": [
+            [
+                "adcfdb97.b8d128"
+            ]
+        ]
+    },
+    {
+        "id": "adcfdb97.b8d128",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Show flow data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "2408eeae.e57bf2",
+        "type": "dashDB in",
+        "z": "ced42fa7.cb8f3",
+        "dashDB": "235f986a62b435e9",
+        "service": "_ext_",
+        "query": "",
+        "params": "",
+        "name": "MAS (8.6)",
+        "x": 980,
+        "y": 920,
+        "wires": [
+            [
+                "c6212d29.ee945",
+                "8afeca06.e878d8"
+            ]
+        ]
+    },
+    {
+        "id": "8afeca06.e878d8",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Insert Result",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "5ceb81e5.e6fff",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Format SQL",
+        "func": "// Get general flow variables set upon deployment of this flow\n\nlet deviceID = flow.get('deviceID');\nlet deviceType = flow.get('deviceType');\nlet columns = flow.get('columns');\nlet schemaName = flow.get('schemaName');\nlet metricTableName = flow.get('metricTableName');\n\n// Create timestamp for now\n\nlet now          = new Date();\nlet year         = now.getFullYear();\nlet month        = now.getMonth()+1; \nlet day          = now.getDate();\nlet hour         = now.getHours();\nlet minute       = now.getMinutes();\nlet second       = now.getSeconds();   \nlet millisecond  = now.getMilliseconds();   \n\nif(month.toString().length == 1) {\nmonth = '0'+month;\n}\nif(day.toString().length == 1) {\nday = '0'+day;\n}   \nif(hour.toString().length == 1) {\nhour = '0'+hour;\n}\nif(minute.toString().length == 1) {\nminute = '0'+minute;\n}\nif(second.toString().length == 1) {\nsecond = '0'+second;\n}   \n\nlet timestamp = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;  // Used for RCV_TIMESTAMP_UTC and UPDATED_UTC without any milliseconds\nlet evt_timestamp = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second+'.'+millisecond;\n\n// Simulate 1 line from the csv file\n// !! **** Manually enter data here - Copy from \"set Flow Data\" in step 1 **** !!\nlet line = {\n    'evt_timestamp': evt_timestamp,\n    'speed1' : 2829.25,\n    'temp_in' : 50,\n    'temp_out' : 57,\n    'flow_in' : 319,\n    'flow_out' : 368,\n    'pressure1' : 152,\n    'pressure2' : 153,\n    'pump_life' : 38868,\n    'gasket_life' : 39459,\n    'impeller_life' : 23621,\n    'PumpError' : true,\n    'GasketError' : false,\n    'ImpellerError' : false\n};\n\n\n// Create the SQL statement - starting with the standard content - DON'T CHANGE !!\nlet payload = 'INSERT INTO '+schemaName+'.'+metricTableName+' (RCV_TIMESTAMP_UTC,UPDATED_UTC,DEVICEID,DEVICETYPE,'+columns+') VALUES ';\npayload += `('${timestamp}','${timestamp}','${deviceID}','${deviceType}'`;\n\n// BEGIN: THIS SECTION CAN BE COPIED TO STEP 5 \"Format SQL\" NODE, ONCE IT WORKS.\n        // This is where each of the csv columns get added\n        // !! **** Manually enter data here (it is using JavaScript Template Literals) **** !!\n        payload += `, '${line.evt_timestamp}'`;\n        payload += `, '${line.speed1}'`;\n        payload += `, '${line.temp_in}'`;\n        payload += `, '${line.temp_out}'`;\n        payload += `, '${line.flow_in}'`;\n        payload += `, '${line.flow_out}'`;\n        payload += `, '${line.pressure1}'`;\n        payload += `, '${line.pressure2}'`;\n        payload += `, '${line.pump_life}'`;\n        payload += `, '${line.gasket_life}'`;\n        payload += `, '${line.impeller_life}'`;\n        payload += `, '${line.PumpError}'`;\n        payload += `, '${line.GasketError}'`;\n        payload += `, '${line.ImpellerError}' ),`;\n// END\n\nmsg.payload = payload.slice(0, - 1) + ';'; // Replaced the \",\" with \";\" in the end of the data values line as it was prepared for a multi line INSERT\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 620,
+        "wires": [
+            [
+                "83ba7192.7b09",
+                "b382c88e.469e18"
+            ]
+        ]
+    },
+    {
+        "id": "b382c88e.469e18",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "83ba7192.7b09",
+        "type": "dashDB in",
+        "z": "ced42fa7.cb8f3",
+        "dashDB": "235f986a62b435e9",
+        "service": "_ext_",
+        "query": "",
+        "params": "",
+        "name": "MAS (8.6)",
+        "x": 620,
+        "y": 620,
+        "wires": [
+            [
+                "793f17fd.d36cd8"
+            ]
+        ]
+    },
+    {
+        "id": "793f17fd.d36cd8",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Insert Result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "18a811c1.0d9a9e",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "4. Update the \"Fomat SQL\" function node in step 5 to reflect step 3",
+        "info": "",
+        "x": 300,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "49f7e270.8403ac",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Failure Response",
+        "func": "switch(msg.statusCode)\n{\n    case 401:\n        msg.response = \"Invalid Credentials (Key or Token)\";\n        break;  \n    case 403:\n        msg.response = \"The authentication method is invalid or the API key used does not exist\";\n        break;  \n    case 404:\n        msg.response = msg.payload.ex.replace(\"Entity type not found for given name\", \"Asset Type table not created for:\") + \"</br></br>Please create Asset Type table in step 2!\";\n        break;  \n     case 500:\n        msg.response = \"Unexpected error\";\n        break;  \n   default:\n        msg.output = \"Unknown response!!\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 220,
+        "wires": [
+            [
+                "985d579c.7e0e88",
+                "fc2cc8e35a2877a0"
+            ]
+        ]
+    },
+    {
+        "id": "a2c2344c.06d188",
+        "type": "http request",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 910,
+        "y": 200,
+        "wires": [
+            [
+                "a0b3b566.c8c528",
+                "2dbb8033.0cfc2"
+            ]
+        ]
+    },
+    {
+        "id": "b14534b5.2fe908",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Prepare REST API Call",
+        "func": "//Create URL: https://mas83.api.monitor.maximo34.innovationcloud.info/api/meta/v1/mas83/entityType/JE_DB_TEST_2\n\nmsg.url = msg.payload.monitorAPIURL +  \"meta/v1/demo/entityType/\" + msg.payload.metricTableName;\n\nmsg.headers = msg.payload.headers;\n\nmsg.method = \"GET\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 200,
+        "wires": [
+            [
+                "516f5481.e24bac",
+                "a2c2344c.06d188"
+            ]
+        ]
+    },
+    {
+        "id": "a0b3b566.c8c528",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Response",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "516f5481.e24bac",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Get Table Info Request",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "2dbb8033.0cfc2",
+        "type": "switch",
+        "z": "ced42fa7.cb8f3",
+        "name": "statusCode",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1130,
+        "y": 200,
+        "wires": [
+            [
+                "21941cd4.aac7d4"
+            ],
+            [
+                "49f7e270.8403ac"
+            ]
+        ],
+        "outputLabels": [
+            "200",
+            "otherwise"
+        ]
+    },
+    {
+        "id": "21941cd4.aac7d4",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Asset Type Response",
+        "func": "let response = \"\";\nlet payload = msg.payload;\n\n\nif (!payload.name) {\n    // get JSON array\n    response = \"These assets are defined:\";\n    \n    for(let i = 0; i < payload.length; i++){ \n        response = response + \"</br>Name: \" + payload[i].name;\n    }\n\n} else {\n    // get JSON object\n    response = response + \"The configured database table exist:\"\n                        + \"</br>\" \n                        + \"</br>Name: \" + msg.payload.name \n                        + \"</br>Schema Name: \" + msg.payload.schemaName \n                        + \"</br>Metric Table: \" + msg.payload.metricTableName\n                        + \"</br>Metric Timestamp Column: \" + msg.payload.metricTimestampColumn\n                        + \"</br>Dimension Table: \" + msg.payload.dimensionTableName \n                        + \"</br>\";\n}\n\n//msg = {};\nmsg.response = response;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1340,
+        "y": 180,
+        "wires": [
+            [
+                "985d579c.7e0e88",
+                "fc2cc8e35a2877a0"
+            ]
+        ]
+    },
+    {
+        "id": "985d579c.7e0e88",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1570,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "2f0bfa9.1010706",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Clear once",
+        "func": "if (msg.parts.index == 0){\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 820,
+        "wires": [
+            [
+                "dfa4c2e33857dd23"
+            ]
+        ]
+    },
+    {
+        "id": "e78f4e0d.c04a5",
+        "type": "inject",
+        "z": "ced42fa7.cb8f3",
+        "name": "Create Table",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 440,
+        "wires": [
+            [
+                "e793c766.755c18"
+            ]
+        ]
+    },
+    {
+        "id": "d14c4d72.be32c",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Create Table Request",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "812fa13.218a86",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "CSV's",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "e793c766.755c18",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Prepare REST API Call",
+        "func": "// Get all the flow variables and put them into the data object\nlet keyArray = flow.keys();\nlet data = {};\nfor(let i = 0; i < keyArray.length; i++){ \n    data[keyArray[i]] = flow.get(keyArray[i]);\n}\n\n\n//Create URL, e.g.: https://mas83.api.monitor.maximo34.innovationcloud.info/api/meta/v1/mas83/entityType?createTables=true\n\nmsg.url = data.monitorAPIURL;\nmsg.url += \"meta/v1/demo/entityType?createTables=true\";\n\nmsg.headers = data.headers;\n\nmsg.method = \"POST\";\n\nmsg.payload = [{}];\n\nmsg.payload[0].name = data.metricTableName;\nmsg.payload[0].dimensionTableName = data.dimensionTableName;\nmsg.payload[0].metricTableName = data.metricTableName;\nmsg.payload[0].metricTimestampColumn = data.metricTimestampColumn;\nmsg.payload[0].dataItemDto = [];\n\n// Create all the metric data objects\nlet metricEntries = Object.entries(data.metrics);\nlet metricNumber = Object.keys(data.metrics).length;\nfor(let i = 0; i < metricNumber; i++){ \n    msg.payload[0].dataItemDto[i] = {\n        \"columnType\": metricEntries[i][1],\n        \"name\": metricEntries[i][0],\n        \"type\": \"METRIC\",\n        \"columnName\": metricEntries[i][0]\n    }\n}\n\n// Create all the dimension data objects\nlet dimensionsEntries = Object.entries(data.dimensions);\nlet dimensionsNumber = Object.keys(data.dimensions).length;\nfor(let i = 0; i < dimensionsNumber; i++){ \n    msg.payload[0].dataItemDto[i+(metricNumber)] = {\n        \"columnType\": dimensionsEntries[i][1],\n        \"name\": dimensionsEntries[i][0],\n        \"type\": \"DIMENSION\",\n        \"columnName\": dimensionsEntries[i][0]\n    }\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 440,
+        "wires": [
+            [
+                "6ffcbee6.0867c"
+            ]
+        ]
+    },
+    {
+        "id": "6ffcbee6.0867c",
+        "type": "json",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 610,
+        "y": 440,
+        "wires": [
+            [
+                "d14c4d72.be32c",
+                "4a34d10f.f835f"
+            ]
+        ]
+    },
+    {
+        "id": "4a34d10f.f835f",
+        "type": "http request",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 910,
+        "y": 440,
+        "wires": [
+            [
+                "5b179a40.a57ca4",
+                "6739f9e0.acd588"
+            ]
+        ]
+    },
+    {
+        "id": "5b179a40.a57ca4",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Response",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "77a3747.2e9bb8c",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Failure Response",
+        "func": "switch(msg.statusCode)\n{\n    case 400:\n        msg.response = \"Invalid request (invalid query parameter value)\";\n        break;  \n    case 401:\n        msg.response = \"Invalid Credentials (Key or Token)\";\n        break;  \n    case 403:\n        msg.response = \"The authentication method is invalid or the API key used does not exist\";\n        break;  \n     case 500:\n        msg.response = \"Unexpected error\";\n        break;  \n   default:\n        msg.output = \"Unknown response!!\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 460,
+        "wires": [
+            [
+                "f20b2b43.369698",
+                "fc2cc8e35a2877a0"
+            ]
+        ]
+    },
+    {
+        "id": "6739f9e0.acd588",
+        "type": "switch",
+        "z": "ced42fa7.cb8f3",
+        "name": "statusCode",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1130,
+        "y": 440,
+        "wires": [
+            [
+                "34a6ab88.78af84"
+            ],
+            [
+                "77a3747.2e9bb8c"
+            ]
+        ],
+        "outputLabels": [
+            "200",
+            "otherwise"
+        ]
+    },
+    {
+        "id": "34a6ab88.78af84",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Asset Type Response",
+        "func": "let payload = msg.payload;\n\n// get JSON object data\nlet response = \"The configured database table was created:\"\n             + \"</br>\" \n             + \"</br>Name: \" + msg.payload[0].name \n             + \"</br>Schema Name: \" + msg.payload[0].schemaName \n             + \"</br>Metric Table: \" + msg.payload[0].metricTableName\n             + \"</br>Metric Timestamp Column: \" + msg.payload[0].metricTimestampColumn\n             + \"</br>Dimension Table: \" + msg.payload[0].dimensionTableName \n             + \"</br>\";\n\n//msg = {};\nmsg.response = response;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1340,
+        "y": 420,
+        "wires": [
+            [
+                "f20b2b43.369698",
+                "fc2cc8e35a2877a0"
+            ]
+        ]
+    },
+    {
+        "id": "f20b2b43.369698",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1570,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "3fca15c1.68b06a",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "Enter data here:",
+        "info": "",
+        "x": 400,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6f697615.528cb8",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "INFORMATION: Version 1.1: This script can create the asset and asset dimension tables and then ingest data from a CSV file. Open this node for instructions.",
+        "info": "2022-02-15 Version 1.1: Simplified flow with more guidance and comments.\n2021-06-29 Version 1.0: Finalised, documented and verified.\n2021-06-28 Restructuring and simplification to reduce the number of places to enter/modify data.\n2021-06-27 Investigated how to create the table as well within the script to avoid Postman\n2021-06-25 Added autoclear of line counter + some restructuring.\n2021-06-24 UploadSql and chunks-to-lines flow added.\n2021-06-22 1 row Format SQL and ingest added.\n2021-06-21 First structure in place.\n\nAuthor: Jan Ekstrøm, jan.ekstrom@dk.ibm.com, @ekstrom\n\n\n# Pre-requisites\n\n** This flow is for ingesting CSV data into Db2 **\n\nThis Node-RED flow needs to run on a local installation as it requires access to a file system for CSV file ingestion.\n\nNode-RED library dependencies:\n- node-red-dashboard\n- node-red-contrib-ui-upload\n- node-red-contrib-chunks-to-lines\n- node-red-nodes-cf-sqldb-dashdb\n\n\n# Instructions\n\nSTEP 1) \nEdit the data in the first section of the \"Set Flow data\" function node.\nThe data will be stored in flow variables and used in the other function nodes when activated, so it should automaticaly be used if the data is correct.\n\nTIP: You might need to contact the MAS Admin to get the Monitor API Key and Token.\n\nIMPORTANT: The order and names of the metrics MUST be the same as in the CSV file.\n   \nSTEP 2) \nOpen the GUI in http://localhost:1880/ui\nThis will show you the status of the metric table you have defined in step 1. If the table has not yet been created (look at the status field in the UI) then simply click on the Create Table inject node in this flow.\n\nSTEP 3) \nEdit the credentials in the Db2 (dashdb) node.\nEdit the line object and data ingestion line so that you have a successfull ingestion into the database table.\n\nTIP: You might need to contact the MAS Admin to get the credentials to the IoT DB2 Warehouse database.\n\nTIP: You can use DBeaver to verify that the data has indeed been ingested.\n\nSTEP 4)\nOnce step 3 is working, then copy the content from the \"Format SQL\" node in step 3 to the \"Format SQL\" node in step 5. It is only the part between:\n// BEGIN: THIS SECTION CAN BE COPIED TO STEP 5 \"Format SQL\" NODE, ONCE IT WORKS.\n:\n// END\n\nSTEP 5)\nEdit the credentials in the Db2 (dashdb) node.\nOpen the GUI in http://localhost:1880/ui if not already done.\nYou should now see that the status indicate the table exist.\n\nPress the Choose file button and select your csv file - then click on. the play button.\n\nNOTE: The line count is including the first row with the header information.\n\nTIP: It is always a good idea to try with a csv file with a few rows (5-10) before taking the big file(s).\n\nTIP: You might change the delimeter in the \"csv\" node, to match the delimeter in your CSV file(s).\n\nNOTE: The uploadSql and the chunks-to-lines nodes makes it possible to handle rather large data sets as they make sure the data set is handled in smaller chunks to avoid memory issues - but at the same time ingest 2048 rows into the database at the time (it seems to be a good number from a performance and error avoidance perspective).",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "1e13b33a1e2b50be",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "Enter data here:",
+        "info": "",
+        "x": 400,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "fd1e37311201c4be",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "Enter data here:",
+        "info": "",
+        "x": 800,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "b4460bd1fa41e479",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Set Flow data",
+        "func": "// !! THIS SECTION IS FOR DEFINING THE PARAMETERS USED IN THE FLOW !!\n\n// Define the basic parameters\nlet deviceID              = \"Demo_Pump_01\";\nlet deviceType            = \"Demo_Pump\";\nlet schemaName            = \"DEMO_MAM\";  // The schema name of the Monitor data in MAS\nlet metricTableName       = \"DEMO_PUMP\";\nlet dimensionTableName    = metricTableName + \"_DIMENSIONS\";\nlet metricTimestampColumn = \"evt_timestamp\"; // This contains the measurement timestamp, which will be used insted of the injection timestamp\n//let monitorAPIURL         = \"https://???.api.monitor.???/api/\";\nlet monitorAPIURL         = \"https://demo.api.monitor.maximo35.innovationcloud.info/api/\";\n//let x_api_key             = \"REPLACE WITH CORRECT KEY\";\nlet x_api_key             = \"JpgDcYIUNqfszXh7h0tH__PdL6aVUmYGWUUUS5l37CY\";\n//let x_api_token           = \"REPLACE WITH CORRECT TOKEN\";\nlet x_api_token           = \"pMjUeuo5515K9wSd2h_nHsWbfLmaJQgZwQZQYyUM9_o\";\n\n\n// Define Monitor metric table columns - used for creation of the table and for ingestion into the table.\n// These keys need to match the first column in the CSV file.\n// The Key is used for name and ColumnName. The value is the columnType.\nlet metrics = {\n    \"evt_timestamp\" : \"TIMESTAMP\",\n    \"speed1\" : \"NUMBER\",\n    \"temp_in\" : \"NUMBER\",\n    \"temp_out\" : \"NUMBER\",\n    \"flow_in\" : \"NUMBER\",\n    \"flow_out\" : \"NUMBER\",\n    \"pressure1\" : \"NUMBER\",\n    \"pressure2\" : \"NUMBER\",\n    \"pump_life\" : \"NUMBER\",\n    \"gasket_life\" : \"NUMBER\",\n    \"impeller_life\" : \"NUMBER\",\n    \"PumpError\" : \"BOOLEAN\",\n    \"GasketError\" : \"BOOLEAN\",\n    \"ImpellerError\" : \"BOOLEAN\"\n};\n\n// Define Monitor dimension table columns - used for creation of the table and for ingestion into the table.\nlet dimensions = {\n    \"location\" : \"LITERAL\"\n};\n\n\n// !! DO NOT CHANGE BELOW THIS LINE !!\n\n\n// Extract column names from the metrics\nlet columns = \"\";\nfor (const key in metrics){\n    columns += key + \",\";\n}\n// Remove the \",\" at the end of the string of column names\ncolumns = columns.slice(0, - 1);  \n\n\n// Create the credentials for the Monitor API REST inteface\nlet headers = {\n    \"content-type\":\"application/json\",\n    \"x-api-key\":x_api_key,\n    \"x-api-token\":x_api_token\n}\n\n\n// Set data values for the flow\nlet data = {\n    'deviceID': deviceID,\n    'deviceType': deviceType,\n    'schemaName': schemaName,\n    'dimensionTableName': dimensionTableName,\n    'metricTableName': metricTableName,\n    'metricTimestampColumn': metricTimestampColumn,\n    'monitorAPIURL': monitorAPIURL,\n    'headers': headers,\n    'metrics': metrics,\n    'dimensions': dimensions,\n    'columns': columns\n};\n\n// Set the flow variables\nfor (const key in data){\n    flow.set(key,data[key]);\n}\n\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "b14534b5.2fe908",
+                "17323056.d6f1e"
+            ]
+        ]
+    },
+    {
+        "id": "fc2cc8e35a2877a0",
+        "type": "ui_text",
+        "z": "ced42fa7.cb8f3",
+        "group": "6ed9c06e.549ac",
+        "order": 2,
+        "width": "12",
+        "height": "7",
+        "name": "Response",
+        "label": "",
+        "format": "{{msg.response}}",
+        "layout": "row-left",
+        "x": 1580,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "cf0776a4170db40c",
+        "type": "ui_text",
+        "z": "ced42fa7.cb8f3",
+        "group": "9a057908.25fdc8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Lines injected:",
+        "format": "{{msg._parts.lines}}",
+        "layout": "row-spread",
+        "x": 1420,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "dfa4c2e33857dd23",
+        "type": "ui_button",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "group": "9a057908.25fdc8",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "label": "Clear Lines",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "num",
+        "topic": "_parts.lines",
+        "x": 630,
+        "y": 820,
+        "wires": [
+            [
+                "cf0776a4170db40c"
+            ]
+        ]
+    },
+    {
+        "id": "3c1382bf845cbf00",
+        "type": "ui_upload",
+        "z": "ced42fa7.cb8f3",
+        "group": "9a057908.25fdc8",
+        "title": "Upload to SQL",
+        "name": "uploadSql",
+        "order": 1,
+        "width": 6,
+        "height": 6,
+        "chunk": "256",
+        "transfer": "binary",
+        "x": 190,
+        "y": 920,
+        "wires": [
+            [
+                "2f0bfa9.1010706",
+                "8200367b.f5c098",
+                "9c2f7110.db4c9"
+            ]
+        ]
+    },
+    {
+        "id": "235f986a62b435e9",
+        "type": "dashDB",
+        "hostname": "zen-cpd-zen.maximo35-14cc747866faab74c9640c8ac367af7f-0000.eu-gb.containers.appdomain.cloud",
+        "db": "BLUDB",
+        "port": "32230",
+        "name": "MAS"
+    },
+    {
+        "id": "6ed9c06e.549ac",
+        "type": "ui_group",
+        "name": "Status",
+        "tab": "346b17cb.d35ae8",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "9a057908.25fdc8",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "346b17cb.d35ae8",
+        "order": 1,
+        "disp": false,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "346b17cb.d35ae8",
+        "type": "ui_tab",
+        "name": "CSV => SQL",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
