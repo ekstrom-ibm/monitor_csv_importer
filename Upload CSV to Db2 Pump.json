@@ -28,7 +28,7 @@
         "type": "function",
         "z": "ced42fa7.cb8f3",
         "name": "Ready for next lines",
-        "func": "\nif (msg.error == null) {\n    return [msg, { tick: true }];\n} else {\n    return [null, { tick: true }];\n}\n\n",
+        "func": "msg.lines = msg._parts.lines -1;\n\n\nif (msg.error == null) {\n    return [msg, { tick: true }];\n} else {\n    return [null, { tick: true }];\n}\n\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -38,8 +38,8 @@
         "y": 860,
         "wires": [
             [
-                "16b8522a.20d0de",
-                "cf0776a4170db40c"
+                "cf0776a4170db40c",
+                "16b8522a.20d0de"
             ],
             [
                 "9c2f7110.db4c9"
@@ -111,7 +111,7 @@
         "tostatus": true,
         "complete": "true",
         "targetType": "full",
-        "statusVal": "_parts.lines",
+        "statusVal": "lines",
         "statusType": "msg",
         "x": 1400,
         "y": 860,
@@ -137,9 +137,9 @@
         "id": "eee9e35b.e9b18",
         "type": "comment",
         "z": "ced42fa7.cb8f3",
-        "name": "2. Create Asset Table in DB2",
+        "name": "2. Create Asset Table in DB2 using the Monitor API",
         "info": "# This was used in Postman:\n\n\nPOST https://mas83.api.monitor.maximo34.innovationcloud.info/api/meta/v1/mas83/entityType?createTables=true\n\nParams:\ncreateTables = true\n\nHeaders:\nContent-Type = application/json\nx-api-key = XXX\nx-api-token = XXX\n\n\nRaw Body:\n\n[\n  {\n    \"name\": \"JE_DB_TEST_2\",\n    \"description\": \"API created test asset for data ingestion\",\n    \"dimensionTableName\": \"JE_DB_TEST_2_DIMENSIONS\",\n    \"metricTableName\": \"JE_DB_TEST_2\",\n    \"metricTimestampColumn\": \"evt_timestamp\",\n    \"dataItemDto\": [\n      {\n        \"columnType\": \"TIMESTAMP\",\n        \"name\": \"evt_timestamp\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"evt_timestamp\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"speed1\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"speed1\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"temp_in\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"temp_in\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"temp_out\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"temp_out\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"flow_in\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"flow_in\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"flow_out\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"flow_out\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pressure1\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pressure1\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pressure2\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pressure2\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"pump_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"pump_life\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"gasket_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"gasket_life\"\n      },\n      {\n        \"columnType\": \"NUMBER\",\n        \"name\": \"impeller_life\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"impeller_life\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"PumpError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"PumpError\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"GasketError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"GasketError\"\n      },\n      {\n        \"columnType\": \"BOOLEAN\",\n        \"name\": \"ImpellerError\",\n        \"type\": \"METRIC\",\n        \"columnName\": \"ImpellerError\"\n      },\n      {\n        \"columnType\": \"LITERAL\",\n        \"name\": \"location\",\n        \"type\": \"DIMENSION\",\n        \"columnName\": \"location\"\n      }\n    ]\n  }\n]\n",
-        "x": 180,
+        "x": 250,
         "y": 360,
         "wires": []
     },
@@ -237,7 +237,7 @@
         "y": 200,
         "wires": [
             [
-                "b4460bd1fa41e479"
+                "4af3bf73d9783b1d"
             ]
         ]
     },
@@ -886,26 +886,6 @@
         "wires": []
     },
     {
-        "id": "b4460bd1fa41e479",
-        "type": "function",
-        "z": "ced42fa7.cb8f3",
-        "name": "Set Flow data",
-        "func": "// !! THIS SECTION IS FOR DEFINING THE PARAMETERS USED IN THE FLOW !!\n\n// Define the basic parameters\nlet deviceID              = \"Demo_Pump_01\";\nlet deviceType            = \"Demo_Pump\";\nlet schemaName            = \"DEMO_MAM\";  // The schema name of the Monitor data in MAS\nlet metricTableName       = \"DEMO_PUMP\";\nlet dimensionTableName    = metricTableName + \"_DIMENSIONS\";\nlet metricTimestampColumn = \"evt_timestamp\"; // This contains the measurement timestamp, which will be used insted of the injection timestamp\nlet monitorAPIURL         = \"https://???.api.monitor.???/api/\";\nlet x_api_key             = \"REPLACE WITH CORRECT KEY\";\nlet x_api_token           = \"REPLACE WITH CORRECT TOKEN\";\n\n\n// Define Monitor metric table columns - used for creation of the table and for ingestion into the table.\n// These keys need to match the first column in the CSV file.\n// The Key is used for name and ColumnName. The value is the columnType.\nlet metrics = {\n    \"evt_timestamp\" : \"TIMESTAMP\",\n    \"speed1\" : \"NUMBER\",\n    \"temp_in\" : \"NUMBER\",\n    \"temp_out\" : \"NUMBER\",\n    \"flow_in\" : \"NUMBER\",\n    \"flow_out\" : \"NUMBER\",\n    \"pressure1\" : \"NUMBER\",\n    \"pressure2\" : \"NUMBER\",\n    \"pump_life\" : \"NUMBER\",\n    \"gasket_life\" : \"NUMBER\",\n    \"impeller_life\" : \"NUMBER\",\n    \"PumpError\" : \"BOOLEAN\",\n    \"GasketError\" : \"BOOLEAN\",\n    \"ImpellerError\" : \"BOOLEAN\"\n};\n\n// Define Monitor dimension table columns - used for creation of the table and for ingestion into the table.\nlet dimensions = {\n    \"location\" : \"LITERAL\"\n};\n\n\n// !! DO NOT CHANGE BELOW THIS LINE !!\n\n\n// Extract column names from the metrics\nlet columns = \"\";\nfor (const key in metrics){\n    columns += key + \",\";\n}\n// Remove the \",\" at the end of the string of column names\ncolumns = columns.slice(0, - 1);  \n\n\n// Create the credentials for the Monitor API REST inteface\nlet headers = {\n    \"content-type\":\"application/json\",\n    \"x-api-key\":x_api_key,\n    \"x-api-token\":x_api_token\n}\n\n\n// Set data values for the flow\nlet data = {\n    'deviceID': deviceID,\n    'deviceType': deviceType,\n    'schemaName': schemaName,\n    'dimensionTableName': dimensionTableName,\n    'metricTableName': metricTableName,\n    'metricTimestampColumn': metricTimestampColumn,\n    'monitorAPIURL': monitorAPIURL,\n    'headers': headers,\n    'metrics': metrics,\n    'dimensions': dimensions,\n    'columns': columns\n};\n\n// Set the flow variables\nfor (const key in data){\n    flow.set(key,data[key]);\n}\n\nmsg.payload = data;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 400,
-        "y": 200,
-        "wires": [
-            [
-                "b14534b5.2fe908",
-                "17323056.d6f1e"
-            ]
-        ]
-    },
-    {
         "id": "fc2cc8e35a2877a0",
         "type": "ui_text",
         "z": "ced42fa7.cb8f3",
@@ -931,7 +911,7 @@
         "height": 0,
         "name": "",
         "label": "Lines injected:",
-        "format": "{{msg._parts.lines}}",
+        "format": "{{msg.lines}}",
         "layout": "row-spread",
         "x": 1420,
         "y": 820,
@@ -986,13 +966,137 @@
         ]
     },
     {
+        "id": "4af3bf73d9783b1d",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Set Flow data",
+        "func": "// !! THIS SECTION IS FOR DEFINING THE PARAMETERS USED IN THE FLOW !!\n\n// Define the basic parameters\nlet deviceID              = \"Demo_Pump_01\";\nlet deviceType            = \"Demo_Pump\";\nlet schemaName            = \"DEMO_MAM\";  // The schema name of the Monitor data in MAS\nlet metricTableName       = \"DEMO_PUMP\";\nlet dimensionTableName    = metricTableName + \"_DIMENSIONS\";\nlet metricTimestampColumn = \"evt_timestamp\"; // This contains the measurement timestamp, which will be used insted of the injection timestamp\n//let monitorAPIURL         = \"https://???.api.monitor.???/api/\";\n//let x_api_key             = \"REPLACE WITH CORRECT KEY\";\n//let x_api_token           = \"REPLACE WITH CORRECT TOKEN\";\n\n\n// Define Monitor metric table columns - used for creation of the table and for ingestion into the table.\n// These keys need to match the first column in the CSV file.\n// The Key is used for name and ColumnName. The value is the columnType.\nlet metrics = {\n    \"evt_timestamp\" : \"TIMESTAMP\",\n    \"speed1\" : \"NUMBER\",\n    \"temp_in\" : \"NUMBER\",\n    \"temp_out\" : \"NUMBER\",\n    \"flow_in\" : \"NUMBER\",\n    \"flow_out\" : \"NUMBER\",\n    \"pressure1\" : \"NUMBER\",\n    \"pressure2\" : \"NUMBER\",\n    \"pump_life\" : \"NUMBER\",\n    \"gasket_life\" : \"NUMBER\",\n    \"impeller_life\" : \"NUMBER\",\n    \"PumpError\" : \"BOOLEAN\",\n    \"GasketError\" : \"BOOLEAN\",\n    \"ImpellerError\" : \"BOOLEAN\"\n};\n\n// Define Monitor dimension table columns - used for creation of the table and for ingestion into the table.\nlet dimensions = {\n    \"location\" : \"LITERAL\"\n};\n\n\n// !! DO NOT CHANGE BELOW THIS LINE !!\n\n\n// Extract column names from the metrics\nlet columns = \"\";\nfor (const key in metrics){\n    columns += key + \",\";\n}\n// Remove the \",\" at the end of the string of column names\ncolumns = columns.slice(0, - 1);  \n\n\n// Create the credentials for the Monitor API REST inteface\nlet headers = {\n    \"content-type\":\"application/json\",\n    \"x-api-key\":x_api_key,\n    \"x-api-token\":x_api_token\n}\n\n\n// Set data values for the flow\nlet data = {\n    'deviceID': deviceID,\n    'deviceType': deviceType,\n    'schemaName': schemaName,\n    'dimensionTableName': dimensionTableName,\n    'metricTableName': metricTableName,\n    'metricTimestampColumn': metricTimestampColumn,\n    'monitorAPIURL': monitorAPIURL,\n    'headers': headers,\n    'metrics': metrics,\n    'dimensions': dimensions,\n    'columns': columns\n};\n\n// Set the flow variables\nfor (const key in data){\n    flow.set(key,data[key]);\n}\n\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "b14534b5.2fe908",
+                "17323056.d6f1e"
+            ]
+        ]
+    },
+    {
+        "id": "7a36837111055573",
+        "type": "inject",
+        "z": "ced42fa7.cb8f3",
+        "name": "Truncate table",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 1580,
+        "wires": [
+            [
+                "c2b757f0e790a404"
+            ]
+        ]
+    },
+    {
+        "id": "c2b757f0e790a404",
+        "type": "function",
+        "z": "ced42fa7.cb8f3",
+        "name": "Format SQL",
+        "func": "// Get general flow variables set upon deployment of this flow\n\nlet schemaName = flow.get('schemaName');\nlet metricTableName = flow.get('metricTableName');\n\n\n// Create the SQL statement to delete all rows in the table\nmsg.payload = 'TRUNCATE TABLE '+schemaName+'.'+metricTableName+' IMMEDIATE;';\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1580,
+        "wires": [
+            [
+                "ed1ce27b46be379a",
+                "5ddcc69d131537b4"
+            ]
+        ]
+    },
+    {
+        "id": "ed1ce27b46be379a",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "5ddcc69d131537b4",
+        "type": "dashDB in",
+        "z": "ced42fa7.cb8f3",
+        "dashDB": "235f986a62b435e9",
+        "service": "_ext_",
+        "query": "",
+        "params": "",
+        "name": "MAS (8.6)",
+        "x": 620,
+        "y": 1580,
+        "wires": [
+            [
+                "df2ae0a08b8af83e"
+            ]
+        ]
+    },
+    {
+        "id": "df2ae0a08b8af83e",
+        "type": "debug",
+        "z": "ced42fa7.cb8f3",
+        "name": "Insert Result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "42c616f3b1e37317",
+        "type": "comment",
+        "z": "ced42fa7.cb8f3",
+        "name": "4. Additional \"USE WITH CAUTION\" step before injecting data from the CSV file(s)",
+        "info": "",
+        "x": 350,
+        "y": 1480,
+        "wires": []
+    },
+    {
         "id": "235f986a62b435e9",
         "type": "dashDB",
         "hostname": "zen-cpd-zen.maximo35-14cc747866faab74c9640c8ac367af7f-0000.eu-gb.containers.appdomain.cloud",
         "db": "BLUDB",
         "port": "32230",
-        "name": "MAS",
-        "credentials": {}
+        "name": "MAS"
     },
     {
         "id": "6ed9c06e.549ac",
