@@ -1,0 +1,740 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "CSV to MQTT",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9a057908.25fdc8",
+        "type": "ui_group",
+        "name": "Upload Multiple Devices",
+        "tab": "d9189f8ce55ee91f",
+        "order": 2,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "74eae28f.f6e6f4",
+        "type": "mqtt-broker",
+        "name": "MAS Monitor",
+        "broker": "masdev.messaging.iot.monitordemo2.ibmmam.com",
+        "port": "443",
+        "tls": "2a61624e.2eeeee",
+        "clientid": "d:masdev:SolarPanel:1BY6WEcLGh8j5v7",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "27f6fa79.6d59f6",
+        "type": "mqtt-broker",
+        "name": "MAS Monitor",
+        "broker": "masdev.messaging.iot.monitordemo2.ibmmam.com",
+        "port": "443",
+        "tls": "c50bdcd8.71256",
+        "clientid": "g:masdev:SolarPanelGW:SolarPanelGW01",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d9189f8ce55ee91f",
+        "type": "ui_tab",
+        "name": "CSV to MQTT",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2a61624e.2eeeee",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "masdev.messaging.iot.monitordemo2.ibmmam.com",
+        "verifyservercert": true,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "c50bdcd8.71256",
+        "type": "tls-config",
+        "name": "TLS MAS Monitor Demo 2",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "masdev.messaging.iot.monitordemo2.ibmmam.com",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "5893845f813cab7b",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "e12a84d8675bc43c",
+        "type": "ui_group",
+        "name": "Upload Single Device",
+        "tab": "d9189f8ce55ee91f",
+        "order": 1,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ea2d9eb578c2920c",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "CSV to MQTT to Monitor through a single device",
+        "info": "",
+        "x": 240,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "baf77679a24861ba",
+        "type": "chunks-to-lines",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "nbLines": "1000",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 500,
+        "y": 400,
+        "wires": [
+            [
+                "cc38e10051de3b3a"
+            ]
+        ]
+    },
+    {
+        "id": "cc38e10051de3b3a",
+        "type": "csv",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 670,
+        "y": 400,
+        "wires": [
+            [
+                "0d66986565404fe0"
+            ]
+        ]
+    },
+    {
+        "id": "37238cc120e9e038",
+        "type": "ui_upload",
+        "z": "f6f2187d.f17ca8",
+        "group": "e12a84d8675bc43c",
+        "title": "Upload CSV with a single device",
+        "name": "uploadCSVwithSingleDevice",
+        "order": 3,
+        "width": 6,
+        "height": 6,
+        "chunk": "512",
+        "transfer": "binary",
+        "x": 180,
+        "y": 340,
+        "wires": [
+            [
+                "baf77679a24861ba",
+                "8d6257872f3d8d12"
+            ]
+        ]
+    },
+    {
+        "id": "0d66986565404fe0",
+        "type": "delay",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 840,
+        "y": 400,
+        "wires": [
+            [
+                "83d7ed67ef91baec"
+            ]
+        ]
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "8d6257872f3d8d12",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Clear once",
+        "func": "if (msg.parts.index == 0){\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 280,
+        "wires": [
+            [
+                "282dc5322e3e589b"
+            ]
+        ]
+    },
+    {
+        "id": "282dc5322e3e589b",
+        "type": "ui_button",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "group": "e12a84d8675bc43c",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "label": "Clear Lines",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "num",
+        "topic": "_parts.lines",
+        "topicType": "str",
+        "x": 690,
+        "y": 280,
+        "wires": [
+            [
+                "b73fe34ba88cad16"
+            ]
+        ]
+    },
+    {
+        "id": "b73fe34ba88cad16",
+        "type": "ui_text",
+        "z": "f6f2187d.f17ca8",
+        "group": "e12a84d8675bc43c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Lines injected:",
+        "format": "{{msg.lines}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1600,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8f433515dc4d9e04",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Ready for next lines",
+        "func": "msg.lines = msg._parts.lines -1;\n\nif (msg.error == null) {\n    return [msg, { tick: true }];\n} else {\n    return [null, { tick: true }];\n}\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 320,
+        "wires": [
+            [
+                "b73fe34ba88cad16",
+                "1a2bd8cf10875a6c"
+            ],
+            [
+                "baf77679a24861ba"
+            ]
+        ]
+    },
+    {
+        "id": "1a2bd8cf10875a6c",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Progress",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "lines",
+        "statusType": "msg",
+        "x": 1580,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "cb98688bd0cce4f4",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "Send MQTT event to a device to MAS Monitor",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "74eae28f.f6e6f4",
+        "x": 1500,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "83d7ed67ef91baec",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set MQTT event",
+        "func": "// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nmsg.topic = \"iot-2/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 400,
+        "wires": [
+            [
+                "ceda6ac412b78965",
+                "cb98688bd0cce4f4",
+                "8f433515dc4d9e04"
+            ]
+        ]
+    },
+    {
+        "id": "ceda6ac412b78965",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "01248a45928d5c59",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "Send MQTT event to a gateway to MAS Monitor",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "27f6fa79.6d59f6",
+        "x": 1500,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "d95ee66bfcb907ca",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "CSV to MQTT to Monitor through a gateway",
+        "info": "",
+        "x": 230,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "62f264c1b8e18bc2",
+        "type": "chunks-to-lines",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "nbLines": "1000",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 500,
+        "y": 700,
+        "wires": [
+            [
+                "023ffc9da1ef8ba8"
+            ]
+        ]
+    },
+    {
+        "id": "023ffc9da1ef8ba8",
+        "type": "csv",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 670,
+        "y": 700,
+        "wires": [
+            [
+                "eca0c1388cc14e3e"
+            ]
+        ]
+    },
+    {
+        "id": "7380b9371fb6606b",
+        "type": "ui_upload",
+        "z": "f6f2187d.f17ca8",
+        "group": "9a057908.25fdc8",
+        "title": "Upload CSV with multiple devices",
+        "name": "uploadCSVwithMulipleDevices",
+        "order": 3,
+        "width": 6,
+        "height": 6,
+        "chunk": "512",
+        "transfer": "binary",
+        "x": 190,
+        "y": 640,
+        "wires": [
+            [
+                "62f264c1b8e18bc2",
+                "9293bf745fc827da"
+            ]
+        ]
+    },
+    {
+        "id": "eca0c1388cc14e3e",
+        "type": "delay",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "100",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 840,
+        "y": 700,
+        "wires": [
+            [
+                "ffd26c6af39419df"
+            ]
+        ]
+    },
+    {
+        "id": "9293bf745fc827da",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Clear once",
+        "func": "if (msg.parts.index == 0){\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 580,
+        "wires": [
+            [
+                "de1f2b80f593c206"
+            ]
+        ]
+    },
+    {
+        "id": "de1f2b80f593c206",
+        "type": "ui_button",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "group": "9a057908.25fdc8",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "label": "Clear Lines",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "num",
+        "topic": "_parts.lines",
+        "topicType": "str",
+        "x": 690,
+        "y": 580,
+        "wires": [
+            [
+                "bc9220720170893d"
+            ]
+        ]
+    },
+    {
+        "id": "bc9220720170893d",
+        "type": "ui_text",
+        "z": "f6f2187d.f17ca8",
+        "group": "9a057908.25fdc8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Lines injected:",
+        "format": "{{msg.lines}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1600,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "f2607ec175a31fc9",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Ready for next lines",
+        "func": "msg.lines = msg._parts.lines -1;\n\nif (msg.error == null) {\n    return [msg, { tick: true }];\n} else {\n    return [null, { tick: true }];\n}\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 620,
+        "wires": [
+            [
+                "bc9220720170893d",
+                "2d08434d460bba2c"
+            ],
+            [
+                "62f264c1b8e18bc2"
+            ]
+        ]
+    },
+    {
+        "id": "2d08434d460bba2c",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Progress",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "lines",
+        "statusType": "msg",
+        "x": 1580,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "ffd26c6af39419df",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set MQTT event",
+        "func": "// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nlet deviceType = \"SolarPanel\";\nmsg.deviceid = msg.payload.DEVICEID;\n\nmsg.topic = \"iot-2/type/\" + deviceType + \"/id/\" + msg.deviceid + \"/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 700,
+        "wires": [
+            [
+                "6c4e137c7a63c76d",
+                "f2607ec175a31fc9",
+                "01248a45928d5c59"
+            ]
+        ]
+    },
+    {
+        "id": "6c4e137c7a63c76d",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 760,
+        "wires": []
+    }
+]
