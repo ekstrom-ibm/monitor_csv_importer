@@ -20,11 +20,11 @@
     {
         "id": "74eae28f.f6e6f4",
         "type": "mqtt-broker",
-        "name": "MAS Monitor",
+        "name": "MAS Monitor Device",
         "broker": "masdev.messaging.iot.monitordemo2.ibmmam.com",
         "port": "443",
-        "tls": "2a61624e.2eeeee",
-        "clientid": "d:masdev:SolarPanel:1BY6WEcLGh8j5v7",
+        "tls": "812c60efb241959d",
+        "clientid": "d:masdev:XX_SolarPanel:1BY6WEcLGh8j5v7",
         "autoConnect": true,
         "usetls": true,
         "protocolVersion": "4",
@@ -48,11 +48,11 @@
     {
         "id": "27f6fa79.6d59f6",
         "type": "mqtt-broker",
-        "name": "MAS Monitor",
+        "name": "MAS Monitor Gateway",
         "broker": "masdev.messaging.iot.monitordemo2.ibmmam.com",
         "port": "443",
-        "tls": "c50bdcd8.71256",
-        "clientid": "g:masdev:SolarPanelGW:SolarPanelGW01",
+        "tls": "812c60efb241959d",
+        "clientid": "g:masdev:XX_SolarPanel_GW:XX_SolarPanel_GW01",
         "autoConnect": true,
         "usetls": true,
         "protocolVersion": "4",
@@ -80,34 +80,6 @@
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
-    },
-    {
-        "id": "2a61624e.2eeeee",
-        "type": "tls-config",
-        "name": "",
-        "cert": "",
-        "key": "",
-        "ca": "",
-        "certname": "",
-        "keyname": "",
-        "caname": "",
-        "servername": "masdev.messaging.iot.monitordemo2.ibmmam.com",
-        "verifyservercert": true,
-        "alpnprotocol": ""
-    },
-    {
-        "id": "c50bdcd8.71256",
-        "type": "tls-config",
-        "name": "TLS MAS Monitor Demo 2",
-        "cert": "",
-        "key": "",
-        "ca": "",
-        "certname": "",
-        "keyname": "",
-        "caname": "",
-        "servername": "masdev.messaging.iot.monitordemo2.ibmmam.com",
-        "verifyservercert": false,
-        "alpnprotocol": ""
     },
     {
         "id": "5893845f813cab7b",
@@ -218,6 +190,20 @@
         "className": ""
     },
     {
+        "id": "812c60efb241959d",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "masdev.messaging.iot.monitordemo2.ibmmam.com",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    },
+    {
         "id": "ea2d9eb578c2920c",
         "type": "comment",
         "z": "f6f2187d.f17ca8",
@@ -282,8 +268,8 @@
         "y": 340,
         "wires": [
             [
-                "baf77679a24861ba",
-                "8d6257872f3d8d12"
+                "8d6257872f3d8d12",
+                "e6871322c6372430"
             ]
         ]
     },
@@ -316,7 +302,7 @@
         "id": "3cc11d24.ff01a2",
         "type": "comment",
         "z": "f6f2187d.f17ca8",
-        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "name": "Docker Node-RED Warning:\\n Please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
         "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
         "x": 350,
         "y": 80,
@@ -327,7 +313,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Clear once",
-        "func": "if (msg.parts.index == 0){\n    return msg;\n}\n",
+        "func": "if (msg.parts.index == 0){\n    msg.messageCounter = 0;\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -379,7 +365,7 @@
         "height": 0,
         "name": "",
         "label": "Lines injected:",
-        "format": "{{msg.lines}}",
+        "format": "{{msg.messageCounter}}",
         "layout": "row-spread",
         "className": "",
         "x": 1600,
@@ -420,7 +406,7 @@
         "tostatus": true,
         "complete": "true",
         "targetType": "full",
-        "statusVal": "lines",
+        "statusVal": "messageCounter",
         "statusType": "msg",
         "x": 1580,
         "y": 340,
@@ -430,7 +416,7 @@
         "id": "cb98688bd0cce4f4",
         "type": "mqtt out",
         "z": "f6f2187d.f17ca8",
-        "name": "Send MQTT event to a device to MAS Monitor",
+        "name": "Send MQTT event to a device in MAS Monitor",
         "topic": "",
         "qos": "",
         "retain": "",
@@ -449,7 +435,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set MQTT event",
-        "func": "// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nmsg.topic = \"iot-2/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;",
+        "func": "// calculate new timestamp\nlet messageCounter = flow.get('messageCounter');\n\nlet newCalcDate = msg.startingTime - (msg.tbm * messageCounter);\nlet newTime = new Date(newCalcDate);\nmsg.newTimestamp = newTime.getTime();\n\n// Create new calculated timestamp as a string\nlet year = newTime.getUTCFullYear();\nlet month = newTime.getUTCMonth() + 1;\nlet day = newTime.getUTCDate();\nlet hour = newTime.getUTCHours();\nlet minute = newTime.getUTCMinutes();\nlet second = newTime.getUTCSeconds();\nlet millisecond = newTime.getUTCMilliseconds();\n\nif (month.toString().length == 1) {\n    month = '0' + month;\n}\nif (day.toString().length == 1) {\n    day = '0' + day;\n}\nif (hour.toString().length == 1) {\n    hour = '0' + hour;\n}\nif (minute.toString().length == 1) {\n    minute = '0' + minute;\n}\nif (second.toString().length == 1) {\n    second = '0' + second;\n}\nif (millisecond.toString().length == 1) {\n    millisecond = '00' + millisecond;\n}\nif (millisecond.toString().length == 2) {\n    millisecond = '0' + millisecond;\n}\n\nmsg.payload.EVT_TIMESTAMP = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second + '.' + millisecond + 'Z';\n\n\nmessageCounter += 1;\nflow.set('messageCounter', messageCounter);\nmsg.messageCounter = messageCounter;\n\n// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nmsg.topic = \"iot-2/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -460,8 +446,8 @@
         "wires": [
             [
                 "ceda6ac412b78965",
-                "cb98688bd0cce4f4",
-                "8f433515dc4d9e04"
+                "8f433515dc4d9e04",
+                "cb98688bd0cce4f4"
             ]
         ]
     },
@@ -469,7 +455,7 @@
         "id": "ceda6ac412b78965",
         "type": "debug",
         "z": "f6f2187d.f17ca8",
-        "name": "",
+        "name": "MQTT Message",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -478,7 +464,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1370,
+        "x": 1400,
         "y": 460,
         "wires": []
     },
@@ -486,7 +472,7 @@
         "id": "01248a45928d5c59",
         "type": "mqtt out",
         "z": "f6f2187d.f17ca8",
-        "name": "Send MQTT event to a gateway to MAS Monitor",
+        "name": "Send MQTT event to a gateway in MAS Monitor",
         "topic": "",
         "qos": "",
         "retain": "",
@@ -496,7 +482,7 @@
         "correl": "",
         "expiry": "",
         "broker": "27f6fa79.6d59f6",
-        "x": 1500,
+        "x": 1520,
         "y": 700,
         "wires": []
     },
@@ -565,8 +551,8 @@
         "y": 640,
         "wires": [
             [
-                "62f264c1b8e18bc2",
-                "9293bf745fc827da"
+                "9293bf745fc827da",
+                "9a215aabe9c16050"
             ]
         ]
     },
@@ -600,7 +586,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Clear once",
-        "func": "if (msg.parts.index == 0){\n    return msg;\n}\n",
+        "func": "if (msg.parts.index == 0){\n    msg.messageCounter = 0;\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -652,7 +638,7 @@
         "height": 0,
         "name": "",
         "label": "Lines injected:",
-        "format": "{{msg.lines}}",
+        "format": "{{msg.messageCounter}}",
         "layout": "row-spread",
         "className": "",
         "x": 1600,
@@ -693,7 +679,7 @@
         "tostatus": true,
         "complete": "true",
         "targetType": "full",
-        "statusVal": "lines",
+        "statusVal": "messageCounter",
         "statusType": "msg",
         "x": 1580,
         "y": 640,
@@ -704,7 +690,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set MQTT event",
-        "func": "// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nlet deviceType = \"SolarPanel\";\nmsg.deviceid = msg.payload.DEVICEID;\n\nmsg.topic = \"iot-2/type/\" + deviceType + \"/id/\" + msg.deviceid + \"/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;\n",
+        "func": "// calculate new timestamp\nlet messageCounter = flow.get('messageCounter');\n\nlet newCalcDate = msg.startingTime - (msg.tbm * messageCounter);\nlet newTime = new Date(newCalcDate);\nmsg.newTimestamp = newTime.getTime();\n\n// Create new calculated timestamp as a string\nlet year = newTime.getUTCFullYear();\nlet month = newTime.getUTCMonth() + 1;\nlet day = newTime.getUTCDate();\nlet hour = newTime.getUTCHours();\nlet minute = newTime.getUTCMinutes();\nlet second = newTime.getUTCSeconds();\nlet millisecond = newTime.getUTCMilliseconds();\n\nif (month.toString().length == 1) {\n    month = '0' + month;\n}\nif (day.toString().length == 1) {\n    day = '0' + day;\n}\nif (hour.toString().length == 1) {\n    hour = '0' + hour;\n}\nif (minute.toString().length == 1) {\n    minute = '0' + minute;\n}\nif (second.toString().length == 1) {\n    second = '0' + second;\n}\nif (millisecond.toString().length == 1) {\n    millisecond = '00' + millisecond;\n}\nif (millisecond.toString().length == 2) {\n    millisecond = '0' + millisecond;\n}\n\nmsg.payload.EVT_TIMESTAMP = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second + '.' + millisecond + 'Z';\n\n\nmessageCounter += 1;\nflow.set('messageCounter', messageCounter);\nmsg.messageCounter = messageCounter;\n\n// set event, must match the event name on the device type in Monitor setup\nlet eventName = \"event_1\";\n\nlet eventFormat = \"json\";\n\nlet deviceType = flow.get('deviceType');  // This is set in the Set Flow Data in the initialization section in the top of this flow\nlet deviceId = msg.payload.DEVICEID;\n\nmsg.topic = \"iot-2/type/\" + deviceType + \"/id/\" + deviceId + \"/evt/\" + eventName + \"/fmt/\" + eventFormat;\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -724,7 +710,7 @@
         "id": "6c4e137c7a63c76d",
         "type": "debug",
         "z": "f6f2187d.f17ca8",
-        "name": "",
+        "name": "MQTT Message",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -733,8 +719,117 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1370,
+        "x": 1420,
         "y": 760,
+        "wires": []
+    },
+    {
+        "id": "ed89aa5e.99f3d8",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Initialisation",
+        "props": [
+            {
+                "p": "ts",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 850,
+        "y": 80,
+        "wires": [
+            [
+                "548d05ae.7bc7ac"
+            ]
+        ]
+    },
+    {
+        "id": "548d05ae.7bc7ac",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set Flow Data",
+        "func": "// !! THIS SECTION IS FOR DEFINING THE PARAMETERS USED IN THE FLOW !!\n\nlet deviceType = \"XX_SolarPanel\";                    // This must match the device type created in Monitor\nflow.set('deviceType', deviceType);\n\n\nlet timeBetweenMeasurementForSingleDevice = 900000;  // the value is in milliseconds ~ 15 minutes\nflow.set('Single_TBM', timeBetweenMeasurementForSingleDevice);\n\nlet timeBetweenMeasurementForMultipleDevices = 60000; // the value is in milliseconds ~ 1 minutes, approx 20 minutes between measurements for one device\nflow.set('Multiple_TBM', timeBetweenMeasurementForMultipleDevices);\n\nflow.set('messageCounter', 0); // reset message counter, which is used to subtract time from starting time\n\n\n// Create timestamp for now\nlet now = new Date();\nlet year = now.getUTCFullYear();\nlet month = now.getUTCMonth() + 1;\nlet day = now.getUTCDate();\nlet hour = now.getUTCHours();\nlet minute = now.getUTCMinutes();\nlet second = now.getUTCSeconds();\nlet millisecond = now.getUTCMilliseconds();\n\nif (month.toString().length == 1) {\n    month = '0' + month;\n}\nif (day.toString().length == 1) {\n    day = '0' + day;\n}\nif (hour.toString().length == 1) {\n    hour = '0' + hour;\n}\nif (minute.toString().length == 1) {\n    minute = '0' + minute;\n}\nif (second.toString().length == 1) {\n    second = '0' + second;\n}\nif (millisecond.toString().length == 1) {\n    millisecond = '00' + millisecond;\n}\nif (millisecond.toString().length == 2) {\n    millisecond = '0' + millisecond;\n}\n\nmsg.timestamp = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second + '.' + millisecond;\nmsg.now = now;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 80,
+        "wires": [
+            [
+                "25030e057af0a563"
+            ]
+        ]
+    },
+    {
+        "id": "25030e057af0a563",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Show time",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1310,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e6871322c6372430",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set Startingpoint",
+        "func": "msg.tbm = flow.get('Single_TBM');\nflow.set('messageCounter', 0); // reset message counter, which is used to subtract time from starting time\nlet endTime = 'T23:45:00.000Z';\n\n// Create timestamp for now\nlet now = new Date();\nlet year = now.getUTCFullYear();\nlet month = now.getUTCMonth() + 1;\nlet day = now.getUTCDate();\nlet hour = now.getUTCHours();\nlet minute = now.getUTCMinutes();\nlet second = now.getUTCSeconds();\nlet millisecond = now.getUTCMilliseconds();\n\nif (month.toString().length == 1) {\n    month = '0' + month;\n}\nif (day.toString().length == 1) {\n    day = '0' + day;\n}\nif (hour.toString().length == 1) {\n    hour = '0' + hour;\n}\nif (minute.toString().length == 1) {\n    minute = '0' + minute;\n}\nif (second.toString().length == 1) {\n    second = '0' + second;\n}\nif (millisecond.toString().length == 1) {\n    millisecond = '00' + millisecond;\n}\nif (millisecond.toString().length == 2) {\n    millisecond = '0' + millisecond;\n}\n\n// msg.timestamp = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second + '.' + millisecond;\n// msg.now = now;\n\nlet tonightString = year + '-' + month + '-' + day + endTime;\n//msg.tonight = tonightString;\nlet tonight = new Date(tonightString);\nlet tonightUnix = tonight.getTime();\nmsg.startingTime = tonightUnix;\n\nflow.set('startingTime', tonight);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 400,
+        "wires": [
+            [
+                "baf77679a24861ba"
+            ]
+        ]
+    },
+    {
+        "id": "9a215aabe9c16050",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set Startingpoint",
+        "func": "msg.tbm = flow.get('Multiple_TBM');\nflow.set('messageCounter', 0); // reset message counter, which is used to subtract time from starting time\nlet endTime = 'T23:40:00.000Z';\n\n// Create timestamp for now\nlet now = new Date();\nlet year = now.getUTCFullYear();\nlet month = now.getUTCMonth() + 1;\nlet day = now.getUTCDate();\nlet hour = now.getUTCHours();\nlet minute = now.getUTCMinutes();\nlet second = now.getUTCSeconds();\nlet millisecond = now.getUTCMilliseconds();\n\nif (month.toString().length == 1) {\n    month = '0' + month;\n}\nif (day.toString().length == 1) {\n    day = '0' + day;\n}\nif (hour.toString().length == 1) {\n    hour = '0' + hour;\n}\nif (minute.toString().length == 1) {\n    minute = '0' + minute;\n}\nif (second.toString().length == 1) {\n    second = '0' + second;\n}\nif (millisecond.toString().length == 1) {\n    millisecond = '00' + millisecond;\n}\nif (millisecond.toString().length == 2) {\n    millisecond = '0' + millisecond;\n}\n\n// msg.timestamp = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second + '.' + millisecond;\n// msg.now = now;\n\nlet tonightString = year + '-' + month + '-' + day + endTime;\n//msg.tonight = tonightString;\nlet tonight = new Date(tonightString);\nlet tonightUnix = tonight.getTime();\nmsg.startingTime = tonightUnix;\n\nflow.set('startingTime', tonight);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 700,
+        "wires": [
+            [
+                "62f264c1b8e18bc2"
+            ]
+        ]
+    },
+    {
+        "id": "877d65cf086477fc",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "This section is used to initialize some Flow Data ",
+        "info": "",
+        "x": 940,
+        "y": 20,
         "wires": []
     }
 ]
